@@ -25,3 +25,29 @@ export const fetchInvPost = async (id) => {
     return null;
   }
 };
+
+// delete a post by ID
+export const deletePost = async (id) => {
+  return api.delete(`/posts/${id}`);
+};
+
+// update apost by ID
+export const updatePost = async (id) => {
+  return api.put(`/posts/${id}`, { title: "I have Updated" });
+};
+
+// infinte scroll
+
+export const fetchInfinitePost = async ({ pageParam = 0 }) => {
+  try {
+    const res = await fetch(
+      `https://jsonplaceholder.typicode.com/posts?_start=${pageParam}&_limit=10`
+    );
+    if (!res.ok) throw new Error("Failed to fetch posts");
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};

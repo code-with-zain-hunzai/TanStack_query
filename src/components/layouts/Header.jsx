@@ -35,6 +35,15 @@ export const Header = () => {
                 TanStack query
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to="/infinite"
+                className="hover:text-gray-300 transition-colors"
+                activeClassName="text-yellow-400"
+              >
+                InfiniteScroll
+              </NavLink>
+            </li>
           </ul>
         </nav>
       </div>

@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import FetchOld from "./pages/FetchOld";
 import FetchRQ from "./pages/FetchRQ";
 import FetchIndv from "./components/layouts/ui/FetchIndv";
+import { InfiniteScroll } from "./pages/InfiniteScroll";
 
 // Create a React Query client
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
       { path: "/trad", element: <FetchOld /> },
       { path: "/rq", element: <FetchRQ /> },
       { path: "/rq/:id", element: <FetchIndv /> },
+      { path: "/infinite", element: <InfiniteScroll /> },
     ],
   },
 ]);
