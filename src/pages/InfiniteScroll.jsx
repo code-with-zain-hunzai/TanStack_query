@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchInfinitePost } from "../api/api";
+import { useInView } from "react-intersection-observer";
 
 export const InfiniteScroll = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
@@ -12,40 +13,20 @@ export const InfiniteScroll = () => {
       },
     });
 
-  const loadMoreRef = useRef(null);
+  const { ref, inView } = useInView({
+    threshold: 1,
+  });
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      {
-        root: null,
-        rootMargin: "0px",
-        threshold: 1.0,
-      }
-    );
-
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
+  React.useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
     }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
-      }
-    };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  {
-    status === "loading" && <p>Loading...</p>;
-  }
-  {
-    status === "error" && <p>Error loading posts.</p>;
-  }
+  if (status === "loading")
+    return <p className="text-center mt-4">Loading...</p>;
+  if (status === "error")
+    return <p className="text-center mt-4">Error loading posts.</p>;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] p-4">
@@ -65,7 +46,9 @@ export const InfiniteScroll = () => {
         </React.Fragment>
       ))}
 
-      <div ref={loadMoreRef} className="h-10" />
+      {/* Sentinel div used for intersection detection */}
+      <div ref={ref} className="h-10" />
+
       {isFetchingNextPage && (
         <p className="mt-4 text-gray-500">Loading more posts...</p>
       )}
